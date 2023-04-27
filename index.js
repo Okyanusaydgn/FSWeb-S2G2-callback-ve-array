@@ -5,17 +5,30 @@ const { fifaData } = require('./fifa.js')
 	Verilen datayı parçalayarak aşağıdaki verileri (console.log-ing) elde ederek pratik yapın. 
 	
 	💡 İPUCU: Öncelikle datayı filtrelemek isteyebilirsiniz */
-
+const world2014Final=fifaData.filter((match) => match.Year === 2014 && match.Stage ==="Final")[0];
 //(a) 2014 Dünya kupası Finali Evsahibi takım ismi (dizide "Home Team Name" anahtarı)
+
+console.log("Home team name of 2014 final:", world2014Final["Home Team Name"]);
 
 //(b) 2014 Dünya kupası Finali Deplasman takım ismi  (dizide "Away Team Name" anahtarı)
 
+console.log("Away team name of 2014 final:", world2014Final["Away Team Name"]);
+
 //(c) 2014 Dünya kupası finali Ev sahibi takım golleri (dizide "Home Team Goals" anahtarı)
+
+console.log("Home team Goals of 2014 final:", world2014Final["Home Team Goals"]);
 
 //(d)2014 Dünya kupası finali Deplasman takım golleri  (dizide "Away Team Goals" anahtarı)
 
+console.log("Away team Goals of 2014 final:", world2014Final["Away Team Goals"]);
+
 //(e) 2014 Dünya kupası finali kazananı*/
 
+console.log(
+	"2014 Dünya kupası finali kazananı:", 
+	world2014Final["Home Team Goals"] > world2014Final["Away Team Goals"]?
+	world2014Final["Home Team Name"]: world2014Final["Away Team Name"]
+	);
 
 /*  Görev 2: 
 	Finaller adlı fonksiyonu kullanarak aşağıdakileri uygulayın:
@@ -25,9 +38,8 @@ const { fifaData } = require('./fifa.js')
 	💡 İPUCU - verilen data içindeki nesnelerin(objects) "Stage" anahtarına bakmalısınız
 */
 
-function Finaller(/* kodlar buraya */) {
-	
-    /* kodlar buraya */
+function Finaller(fifaArr) {
+	return fifaArr.filter(match => match.Stage === "Final")
 }
 
 
@@ -39,9 +51,10 @@ function Finaller(/* kodlar buraya */) {
 	3. Finaller data setindeki tüm yılları içeren "years" adındaki diziyi(array) döndürecek
 	*/
 
-function Yillar(/* kodlar buraya */) {
-	
-    /* kodlar buraya */
+function Yillar(fifaArr,finaller) {
+	const finalMaclari=finaller(fifaArr);
+	const finalYillari=finalMaclari.map((match)=>match.Year);
+	return finalYillari
 }
 
 
@@ -53,10 +66,14 @@ function Yillar(/* kodlar buraya */) {
 	💡 İPUCU: Beraberlikler(ties) için şimdilik endişelenmeyin (Detaylı bilgi için README dosyasına bakabilirsiniz.)
 	4. Tüm kazanan ülkelerin isimlerini içeren `kazananlar` adında bir dizi(array) döndürecek(return)  */ 
 
-function Kazananlar(/* kodlar buraya */) {
+function Kazananlar(fifaArr,finaller) {
+	const finalMaclari = finaller(fifaArr);
+	const wins =finalMaclari.map((match) => 
+	match["Home Team Goals"] > match["Away Team Goals"]?
+	match["Home Team Name"]: match["Away Team Name"]
+	);
 	
-    /* kodlar buraya */
-	
+	return wins
 }
 
 
@@ -72,10 +89,16 @@ function Kazananlar(/* kodlar buraya */) {
 	💡 İPUCU: her cümlenin adım 4'te belirtilen cümleyle birebir aynı olması gerekmektedir.
 */
 
-function YillaraGoreKazananlar(/* kodlar buraya */) {
-	
-/* kodlar buraya */
+function YillaraGoreKazananlar(fifaArr,finaller,yillar,kazananlar) {
+	const finalMaclari = finaller(fifaArr);
+	const finalYillari= yillar(fifaArr,finaller);
+	const finalKazananlari=kazananlar(fifaArr,finaller);
 
+	const sonuc= finalMaclari.map((mac,i) => {
+		return `${finalYillari[i]} yılında, ${finalKazananlari[i]} dünya kupasını kazandı!`;
+	});
+
+	return sonuc
 }
 
 
@@ -93,9 +116,14 @@ function YillaraGoreKazananlar(/* kodlar buraya */) {
 	
 */
 
-function OrtalamaGolSayisi(/* kodlar buraya */) {
-	
-    /* kodlar buraya */
+function OrtalamaGolSayisi(finaller) {
+
+	const toplamGolSayiyisi= finaller.reduce((golToplami,match) => {
+		return match["Home Team Goals"] + match["Away Team Goals"] + golToplami;
+	},0);
+
+	const ortalama = toplamGolSayiyisi / finaller.length;
+	return ortalama.toFixed(2); 
 	
 }
 
